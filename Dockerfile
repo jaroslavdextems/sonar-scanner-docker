@@ -4,15 +4,17 @@ FROM openjdk:8-alpine
 
 RUN apk add --no-cache  curl grep sed unzip
 
-RUN curl --insecure -o ./sonarscanner.zip -L https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip
-RUN unzip ./sonarscanner.zip
+WORKDIR /root
+
+RUN curl --insecure -o ./sonar-scanner.zip -L https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip
+RUN unzip ./sonar-scanner.zip
 
 RUN mv ./sonar-scanner-3.2.0.1227-linux ./sonar-scanner
 
-RUN rm sonarscanner.zip
+RUN rm sonar-scanner.zip
 
 ENV SONAR_SCANNER_OPTS="-Xmx512m" SONAR_RUNNER_HOME="/root/sonar-scanner"
 
-WORKDIR ./sonar-scanner/bin/
+RUN chmod +x /root/sonar-scanner/bin/sonar-scanner 
 
-RUN ./sonar-scanner --help
+CMD ["/bin/sh", "/root/sonar-scanner/bin/sonar-scanner"]
