@@ -6,9 +6,10 @@ RUN apk add --no-cache  curl grep sed unzip
 
 RUN curl --insecure -o ./sonarscanner.zip -L https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip
 RUN unzip ./sonarscanner.zip
-RUN rm ./sonarscanner.zip
-RUN mv ./sonar-scanner-cli-3.2.0.1227-linux ./sonar-scanner
+RUN mkdir ./sonar-scanner && mv ./sonarscanner/sonar-scanner-cli-3.2.0.1227-linux ./sonar-scanner
 
-ENV SONAR_SCANNER_OPTS="-Xmx512m" SONAR_RUNNER_HOME=/root/sonar-scanner
+RUN rm ./sonarscanner.zip && rmdir ./sonarscanner
+
+ENV SONAR_SCANNER_OPTS="-Xmx512m" SONAR_RUNNER_HOME="/root/sonar-scanner"
 
 WORKDIR ./sonar-scanner/bin/
