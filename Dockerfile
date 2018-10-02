@@ -14,3 +14,5 @@ RUN rm sonarscanner.zip
 ENV SONAR_SCANNER_OPTS="-Xmx512m" SONAR_RUNNER_HOME="/root/sonar-scanner"
 
 WORKDIR ./sonar-scanner/bin/
+
+RUN ./sonar-scanner --help
