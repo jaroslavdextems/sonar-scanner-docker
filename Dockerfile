@@ -13,9 +13,9 @@ RUN mv ./sonar-scanner-3.2.0.1227-linux ./sonar-scanner
 
 RUN rm sonar-scanner.zip
 
-ENV SONAR_SCANNER_OPTS "-Xmx512m" 
-ENV SONAR_RUNNER_HOME "/root/sonar-scanner" 
-ENV JAVA_HOME "/usr/lib/jvm/java-1.8-openjdk"
+ENV SONAR_SCANNER_OPTS -Xmx512m
+ENV SONAR_RUNNER_HOME /root/sonar-scanner
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 
 RUN chmod +x /root/sonar-scanner/bin/sonar-scanner 
 
