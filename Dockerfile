@@ -17,10 +17,7 @@ RUN mv sonar-scanner-3.2.0.1227-linux sonar-scanner
 ENV SONAR_RUNNER_HOME=/root/sonar-scanner
 ENV PATH $PATH:/root/sonar-scanner/bin
 
-RUN tee ./sonar-scanner/conf/sonar-scanner.properties << END
-    sonar.exclusions=**/node_modules/**/*
-    sonar.sources=./
-    END
+COPY sonar-runner.properties ./sonar-scanner/conf/sonar-scanner.properties
 
 RUN mkdir /root/src
 WORKDIR /root/src
