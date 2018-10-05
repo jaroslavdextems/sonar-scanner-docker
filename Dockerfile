@@ -1,19 +1,27 @@
-#version 3.2.0.1227
+FROM openjdk:8
 
-FROM openjdk:8-alpine
+RUN apt-get update
+RUN apt-get install -y curl git tmux htop maven sudo
 
-RUN apk add --no-cache  curl grep sed unzip
+# Install Node - allows for scanning of Typescript
+RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+RUN sudo apt-get install -y nodejs build-essential
+
+# Set timezone to CST
+ENV TZ=America/Chicago
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /root
 
-RUN curl --insecure -o ./sonar-scanner.zip -L https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip
-RUN unzip ./sonar-scanner.zip
+RUN curl --insecure -o ./sonarscanner.zip -L https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip
+RUN unzip sonarscanner.zip
+RUN rm sonarscanner.zip
+RUN mv sonar-scanner-3.2.0.1227-linux sonar-scanner
 
-RUN mv ./sonar-scanner-3.2.0.1227-linux ./sonar-scanner
+ENV SONAR_RUNNER_HOME=/root/sonar-scanner
+ENV PATH $PATH:/root/sonar-scanner/bin
 
-RUN rm sonar-scanner.zip
+COPY sonar-runner.properties ./sonar-scanner/conf/sonar-scanner.properties
 
-ENV SONAR_SCANNER_OPTS -Xmx512m 
-ENV sonar_scanner_home /root/sonar-scanner
-ENV use_embedded_jre false
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
+# Use bash if you want to run the environment from inside the shell, otherwise use the command that actually runs the underlying stuff
+#CMD /bin/bash
