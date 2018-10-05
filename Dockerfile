@@ -7,10 +7,6 @@ RUN apt-get install -y curl git tmux htop maven sudo
 RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 RUN sudo apt-get install -y nodejs build-essential
 
-# Set timezone to CST
-ENV TZ=America/Chicago
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 WORKDIR /root
 
 RUN curl --insecure -o ./sonarscanner.zip -L https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227-linux.zip
@@ -21,7 +17,10 @@ RUN mv sonar-scanner-3.2.0.1227-linux sonar-scanner
 ENV SONAR_RUNNER_HOME=/root/sonar-scanner
 ENV PATH $PATH:/root/sonar-scanner/bin
 
-COPY sonar-runner.properties ./sonar-scanner/conf/sonar-scanner.properties
+RUN tee ./sonar-scanner/conf/sonar-scanner.properties << END
+    sonar.exclusions=**/node_modules/**/*
+    sonar.sources=./
+    END
 
-# Use bash if you want to run the environment from inside the shell, otherwise use the command that actually runs the underlying stuff
-#CMD /bin/bash
+RUN mkdir /root/src
+WORKDIR /root/src
